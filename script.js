@@ -1,13 +1,31 @@
-const quantCookies = document.querySelector("#quant-Cookies")
-const Imgcookie = document.querySelector("#Img-cookie")
+const quantCookie = document.querySelector("#quant-cookies");
+const imgCookie = document.querySelector("#img-cookie");
 
-quantCookie.value = 0;
-quantCookie.value = valorquantCookies;
+let valorQuantCookies = 0
+quantCookie.value = valorQuantCookies;
 
-Imgcookie.addEventListenner("Click", atulizarQuantCookies)
+imgCookie.addEventListener("click", atulizarQuantCookies)
 
 function atulizarQuantCookies() {
-    valorquantCookies = valorquantCookies + 1
+    valorQuantCookies = valorQuantCookies + 1
 
-    quantCookie.value = valorquantCookies
+    quantCookie.value = valorQuantCookies
+
+    atualizarJogo();
+}
+
+function atualizarJogo() {
+    if (valorQuantCookies >= 10) {
+        const imgCursor = document.querySelector("#img-cursor");
+        imgCursor.classList.add("cursor-liberado");
+    }
+
+   
+    if (valorQuantCookies >= 50) {
+        const imgVovo = document.querySelector("#img-vovo");
+        imgVovo.classList.add("vovo-liberada");
+    }
+
+
+
 }
