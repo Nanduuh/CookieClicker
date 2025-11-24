@@ -3,27 +3,26 @@ const imgCookie = document.querySelector("#img-cookie");
 const imgCursor = document.querySelector("#img-cursor");
 const imgVovo = document.querySelector("#img-vovo");
 
-// Pega os <p class="preco"> ao lado das imagens (assumindo estrutura atual)
+// Pega os <p class="preco"> ao lado das imagens
 const precoCursorEl = imgCursor ? imgCursor.parentElement.querySelector(".preco") : null;
-const precoVovoEl = imgVovo ? imgVovo.parentElement.querySelector(".preco") : null;
+const precoVovoEl   = imgVovo   ? imgVovo.parentElement.querySelector(".preco")   : null;
 
 let valorQuantCookies = 0;
-let cursores = 0; // quantidade de cursores comprados
-let vovos = 0;    // vovós compradas
+let cursores = 0;
+let vovos = 0;
 
 // PREÇOS DINÂMICOS
-let precoCursor = 10; // começa em 10 e aumenta +5 por compra
-let precoVovo = 50;   // mantive 50 (se quiser dinâmico, altere)
+let precoCursor = 10; // sobe +5 por compra
+let precoVovo   = 50; // agora sobe +25 por compra
 
-// Atribui os textos iniciais dos preços na tela (se elementos existirem)
+// mostra os preços iniciais
 if (precoCursorEl) precoCursorEl.innerText = precoCursor;
-if (precoVovoEl) precoVovoEl.innerText = precoVovo;
+if (precoVovoEl)   precoVovoEl.innerText   = precoVovo;
 
-// Atualiza a UI dos itens (borda, opacidade, preço)
+// Atualiza a UI (bordas e preços)
 function atualizarUIloja() {
-    // Cursor: se tiver cookies suficientes, remove classe 'indisponivel'
-    if (!imgCursor) return;
 
+    // Cursor
     if (valorQuantCookies >= precoCursor) {
         imgCursor.classList.add("item-disponivel");
         imgCursor.classList.remove("item-indisponivel");
@@ -31,70 +30,60 @@ function atualizarUIloja() {
         imgCursor.classList.add("item-indisponivel");
         imgCursor.classList.remove("item-disponivel");
     }
-
-    // Atualiza preço visível
-    if (precoCursorEl) precoCursorEl.innerText = precoCursor;
+    precoCursorEl.innerText = precoCursor;
 
     // Vovó
-    if (imgVovo) {
-        if (valorQuantCookies >= precoVovo) {
-            imgVovo.classList.add("item-disponivel");
-            imgVovo.classList.remove("item-indisponivel");
-        } else {
-            imgVovo.classList.add("item-indisponivel");
-            imgVovo.classList.remove("item-disponivel");
-        }
-        if (precoVovoEl) precoVovoEl.innerText = precoVovo;
+    if (valorQuantCookies >= precoVovo) {
+        imgVovo.classList.add("item-disponivel");
+        imgVovo.classList.remove("item-indisponivel");
+    } else {
+        imgVovo.classList.add("item-indisponivel");
+        imgVovo.classList.remove("item-disponivel");
     }
+    precoVovoEl.innerText = precoVovo;
 }
 
-// função para atualizar valores na tela (campo de cookies)
 function atualizarTela() {
     quantCookie.value = valorQuantCookies;
     atualizarUIloja();
 }
 
-// CLIQUE NO COOKIE (principal)
+// Clique no cookie
 imgCookie.addEventListener("click", () => {
     valorQuantCookies++;
     atualizarTela();
 });
 
-// Compra do cursor: listener atribuído uma vez
+// Compra do cursor
 imgCursor.addEventListener("click", () => {
-    // só compra se tiver recursos
     if (valorQuantCookies >= precoCursor) {
         valorQuantCookies -= precoCursor;
-        cursores++; // adiciona 1 cursor comprado
-        // aumenta o preço do cursor de 5 em 5
+        cursores++;
+
+        // sobe +5 por compra
         precoCursor += 5;
 
         atualizarTela();
-    } else {
-        // opcional: som/feedback de "não tem dinheiro"
     }
 });
 
-// Compra da vovó (listener atribuído uma vez)
-if (imgVovo) {
-    imgVovo.addEventListener("click", () => {
-        if (valorQuantCookies >= precoVovo) {
-            valorQuantCookies -= precoVovo;
-            vovos++;
-            // se quiser que o preço da vovó aumente também, faça: precoVovo += X;
+// Compra da vovó
+imgVovo.addEventListener("click", () => {
+    if (valorQuantCookies >= precoVovo) {
+        valorQuantCookies -= precoVovo;
+        vovos++;
 
-            atualizarTela();
-        }
-    });
-}
+        // sobe +25 por compra
+        precoVovo += 25;
 
-// PRODUÇÃO AUTOMÁTICA A CADA 1 SEGUNDO
+        atualizarTela();
+    }
+});
+
+// Produção automática (1x por segundo)
 setInterval(() => {
-    // cada cursor gera +1 por segundo (mude se quiser)
-    // cada vovó gera +5 por segundo
     valorQuantCookies += (cursores * 1) + (vovos * 5);
     atualizarTela();
 }, 1000);
 
-// chama atualização inicial pra setar a UI corretamente
 atualizarTela();
