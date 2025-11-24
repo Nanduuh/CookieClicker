@@ -1,55 +1,120 @@
+/* ======== RESET BÁSICO ======== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ======== LAYOUT PRINCIPAL ======== */
 main {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
 }
 
+/* COOKIE PRINCIPAL */
+#img-cookie {
+    width: 18rem;
+    max-width: 80vw;
+    transition: transform 0.1s ease;
+    cursor: pointer;
+}
 
+#img-cookie:active {
+    transform: scale(0.95);
+}
+
+/* ======== ÁREA DAS CONSTRUÇÕES ======== */
 #div-construcoes {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     width: 100%;
-    background-color: red;
-    border-top: solid;
-
+    padding: 15px 0;
+    margin-top: 20px;
+    border-top: 3px solid #ffffff55;
+    background: linear-gradient(90deg, #8a0303, #c00000);
 }
 
+/* ======== CAIXA DE CADA CONSTRUÇÃO ======== */
 .item-construcao {
     display: flex;
-    flex-direction: column; 
-    align-items: center;    
-    margin: 10px 20px;
+    flex-direction: column;
+    align-items: center;
+    margin: 12px 25px;
+    transition: all .2s ease;
 }
 
+/* ======== PREÇO ======== */
 .preco {
     color: white;
-    font-size: 20px;
+    font-size: 1.4rem;
     font-weight: bold;
-    margin-top: 5px;
+    margin-top: 6px;
+    text-shadow: 0 0 5px black;
 }
 
-#img-cursor {
-    width: 5rem;
-    border-style: solid;
-    ;
-}
-
-#img-vovo {
-    width: 5rem;
-    border-style: solid;
-    ;
-}
-
-#img-cookie {
-    width: 20rem
-}
-
-.cursor-liberado {
-    border: 5px solid chartreuse;
+/* ======== IMAGENS DA LOJA ======== */
+.item-construcao img {
+    width: 5.3rem;
+    max-width: 22vw;
+    border: 3px solid #ffffff44;
     border-radius: 10px;
+    padding: 3px;
+    transition: .2s ease;
+    opacity: 0.6;
 }
 
-.vovo-liberada {
-    border: 5px solid gold;
-    border-radius: 10px;
+/* ======== ITEM DISPONÍVEL ======== */
+.item-disponivel {
+    opacity: 1 !important;
+    transform: translateY(-4px);
+    cursor: pointer;
+    box-shadow: 0px 0px 12px rgba(0,0,0,0.25);
+}
+
+/* Cursor liberado = borda verde neon */
+.item-disponivel.cursor {
+    border-color: chartreuse !important;
+}
+
+/* Vovó liberada = borda dourada */
+.item-disponivel.vovo {
+    border-color: gold !important;
+}
+
+/* ======== ITEM INDISPONÍVEL ======== */
+.item-indisponivel {
+    opacity: 0.45;
+    cursor: not-allowed;
+    filter: grayscale(60%);
+}
+
+/* ======== RESPONSIVIDADE PARA CELULAR ======== */
+@media (max-width: 600px) {
+
+    #img-cookie {
+        width: 14rem;
+    }
+
+    .item-construcao img {
+        width: 4rem;
+        max-width: 25vw;
+    }
+
+    .preco {
+        font-size: 1.2rem;
+    }
+
+    .item-construcao {
+        margin: 10px 12px;
+    }
+
+    #div-construcoes {
+        padding: 10px 0;
+        margin-top: 15px;
+    }
 }

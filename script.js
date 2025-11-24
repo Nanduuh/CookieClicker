@@ -1,54 +1,100 @@
-// PEGANDO ELEMENTOS
 const quantCookie = document.querySelector("#quant-cookies");
 const imgCookie = document.querySelector("#img-cookie");
+const imgCursor = document.querySelector("#img-cursor");
+const imgVovo = document.querySelector("#img-vovo");
+
+// Pega os <p class="preco"> ao lado das imagens (assumindo estrutura atual)
+const precoCursorEl = imgCursor ? imgCursor.parentElement.querySelector(".preco") : null;
+const precoVovoEl = imgVovo ? imgVovo.parentElement.querySelector(".preco") : null;
 
 let valorQuantCookies = 0;
-let cursores = 0; // +1 por segundo
-let vovos = 0;    // +5 por segundo
+let cursores = 0; // quantidade de cursores comprados
+let vovos = 0;    // vovós compradas
 
-// CLIQUE NO COOKIE
+// PREÇOS DINÂMICOS
+let precoCursor = 10; // começa em 10 e aumenta +5 por compra
+let precoVovo = 50;   // mantive 50 (se quiser dinâmico, altere)
+
+// Atribui os textos iniciais dos preços na tela (se elementos existirem)
+if (precoCursorEl) precoCursorEl.innerText = precoCursor;
+if (precoVovoEl) precoVovoEl.innerText = precoVovo;
+
+// Atualiza a UI dos itens (borda, opacidade, preço)
+function atualizarUIloja() {
+    // Cursor: se tiver cookies suficientes, remove classe 'indisponivel'
+    if (!imgCursor) return;
+
+    if (valorQuantCookies >= precoCursor) {
+        imgCursor.classList.add("item-disponivel");
+        imgCursor.classList.remove("item-indisponivel");
+    } else {
+        imgCursor.classList.add("item-indisponivel");
+        imgCursor.classList.remove("item-disponivel");
+    }
+
+    // Atualiza preço visível
+    if (precoCursorEl) precoCursorEl.innerText = precoCursor;
+
+    // Vovó
+    if (imgVovo) {
+        if (valorQuantCookies >= precoVovo) {
+            imgVovo.classList.add("item-disponivel");
+            imgVovo.classList.remove("item-indisponivel");
+        } else {
+            imgVovo.classList.add("item-indisponivel");
+            imgVovo.classList.remove("item-disponivel");
+        }
+        if (precoVovoEl) precoVovoEl.innerText = precoVovo;
+    }
+}
+
+// função para atualizar valores na tela (campo de cookies)
+function atualizarTela() {
+    quantCookie.value = valorQuantCookies;
+    atualizarUIloja();
+}
+
+// CLIQUE NO COOKIE (principal)
 imgCookie.addEventListener("click", () => {
     valorQuantCookies++;
-    quantCookie.value = valorQuantCookies;
-    atualizarJogo();
+    atualizarTela();
 });
 
-// FUNÇÃO QUE ATUALIZA LIBERAÇÕES DO JOGO
-function atualizarJogo() {
+// Compra do cursor: listener atribuído uma vez
+imgCursor.addEventListener("click", () => {
+    // só compra se tiver recursos
+    if (valorQuantCookies >= precoCursor) {
+        valorQuantCookies -= precoCursor;
+        cursores++; // adiciona 1 cursor comprado
+        // aumenta o preço do cursor de 5 em 5
+        precoCursor += 5;
 
-    // LIBERA CURSOR QUANDO TIVER 10 COOKIES
-    if (valorQuantCookies >= 10) {
-        const imgCursor = document.querySelector("#img-cursor");
-        imgCursor.classList.add("cursor-liberado");
-
-        imgCursor.onclick = () => {
-            if (valorQuantCookies >= 10) {
-                valorQuantCookies -= 10;
-                cursores++; // adiciona +1 cookie por segundo
-                quantCookie.value = valorQuantCookies;
-            }
-        };
+        atualizarTela();
+    } else {
+        // opcional: som/feedback de "não tem dinheiro"
     }
+});
 
-    // LIBERA VOVÓ QUANDO TIVER 50 COOKIES
-    if (valorQuantCookies >= 50) {
-        const imgVovo = document.querySelector("#img-vovo");
-        imgVovo.classList.add("vovo-liberada");
+// Compra da vovó (listener atribuído uma vez)
+if (imgVovo) {
+    imgVovo.addEventListener("click", () => {
+        if (valorQuantCookies >= precoVovo) {
+            valorQuantCookies -= precoVovo;
+            vovos++;
+            // se quiser que o preço da vovó aumente também, faça: precoVovo += X;
 
-        imgVovo.onclick = () => {
-            if (valorQuantCookies >= 50) {
-                valorQuantCookies -= 50;
-                vovos++; // adiciona produção da vovó
-                quantCookie.value = valorQuantCookies;
-            }
-        };
-    }
+            atualizarTela();
+        }
+    });
 }
 
 // PRODUÇÃO AUTOMÁTICA A CADA 1 SEGUNDO
 setInterval(() => {
-    // Cursor -> +1 por segundo cada
-    // Vovó -> +5 por segundo cada
+    // cada cursor gera +1 por segundo (mude se quiser)
+    // cada vovó gera +5 por segundo
     valorQuantCookies += (cursores * 1) + (vovos * 5);
-    quantCookie.value = valorQuantCookies;
+    atualizarTela();
 }, 1000);
+
+// chama atualização inicial pra setar a UI corretamente
+atualizarTela();
